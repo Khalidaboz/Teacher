@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Tutor Management System - Whacka App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- html2pdf.js for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col md:flex-row">
+
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-brand-700 text-white p-4 flex justify-between items-center sticky top-0 z-50 shadow-md">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-calculator text-2xl text-amber-400"></i>
+            <span class="font-bold text-lg">Whacka Math Tutor</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="switchTab('settings')" class="p-2 hover:bg-brand-600 rounded-lg transition" title="الإعدادات">
+                <i class="fa-solid fa-gear text-xl"></i>
+            </button>
+            <button onclick="toggleMobileMenu()" class="p-2 text-xl focus:outline-none">
+                <i class="fa-solid fa-bars" id="menuIcon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar" class="hidden md:flex flex-col w-full md:w-64 bg-brand-800 text-white min-h-screen p-4 flex-shrink-0 transition-all duration-300">
+        <div class="flex items-center gap-3 px-2 py-4 border-b border-brand-700/50 mb-6">
+            <div class="bg-amber-400 text-brand-900 p-3 rounded-xl shadow-lg">
+                <i class="fa-solid fa-square-root-variable text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">Whacka Tutor</h1>
+                <p class="text-xs text-brand-200">Math Instruction Suite</p>
+            </div>
+        </div>
+
+        <nav class="space-y-1 flex-1">
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-right font-medium transition hover:bg-brand-700/60 active">
+                <i class="fa-solid fa-chart-pie w-5 text-center text-amber-400"></i>
+                <span>لوحة التحكم المالي</span>
+            </button>
+            <button onclick="switchTab('students')" id="nav-students" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-right font-medium transition hover:bg-brand-700/60">
+                <i class="fa-solid fa-user-graduate w-5 text-center text-indigo-300"></i>
+                <span>قائمة الطلاب</span>
+            </button>
+            <button onclick="switchTab('schedule')" id="nav-schedule" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-right font-medium transition hover:bg-brand-700/60">
+                <i class="fa-solid fa-calendar-days w-5 text-center text-emerald-400"></i>
+                <span>جدول الحصص</span>
+            </button>
+            <button onclick="switchTab('finances')" id="nav-finances" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-right font-medium transition hover:bg-brand-700/60">
+                <i class="fa-solid fa-wallet w-5 text-center text-rose-400"></i>
+                <span>المصروفات والميزانية</span>
+            </button>
+            <button onclick="switchTab('prompt')" id="nav-prompt" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-right font-medium transition hover:bg-brand-700/60">
+                <i class="fa-solid fa-wand-magic-sparkles w-5 text-center text-sky-400"></i>
+                <span>برومبت Whacka.app</span>
+            </button>
+            <button onclick="switchTab('settings')" id="nav-settings" class="nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl text-right font-medium transition hover:bg-brand-700/60">
+                <i class="fa-solid fa-gear w-5 text-center text-slate-300"></i>
+                <span>الإعدادات والبيانات</span>
+            </button>
+        </nav>
+
+        <div class="border-t border-brand-700/50 pt-4 mt-auto">
+            <div class="bg-brand-900/50 p-3 rounded-xl flex items-center gap-3 text-xs text-brand-200">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span>حالة النظام: جاهز للعمل</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 p-4 md:p-8 overflow-y-auto max-w-7xl mx-auto w-full">
+
+        <!-- Tab 1: Dashboard / Overview -->
+        <section id="tab-dashboard" class="tab-content space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">نظام إدارة دروس الرياضيات (Math Tutor)</h2>
+                    <p class="text-sm text-slate-500">تابع أداء طلابك، حضورهم، ميزانيتك والمصروفات الشخصية بسهولة.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openStudentModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-sm transition">
+                        <i class="fa-solid fa-plus"></i> إضافة طالب
+                    </button>
+                    <button onclick="exportPointsPDF()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-sm font
